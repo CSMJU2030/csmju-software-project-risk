@@ -1,0 +1,45 @@
+services:
+  software-project-risk-db:
+    image: postgres:16-alpine
+    container_name: software-project-risk-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: software_project_risk
+    ports:
+      - '5433:5432'
+    volumes:
+      - software-project-risk-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d software_project_risk']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  software-project-risk-api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: software-project-risk-api
+    restart: unless-stopped
+    depends_on:
+      software-project-risk-db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 4201
+      DATABASE_URL: postgresql://postgres:postgres@software-project-risk-db:5432/software_project_risk
+      CORE_HUB_URL: ${CORE_HUB_URL:-http://host.docker.internal:3000}
+      CORE_HUB_JWKS_URL: ${CORE_HUB_JWKS_URL:-http://host.docker.internal:3000/api/v1/.well-known/jwks.json}
+      CORE_HUB_ISSUER: ${CORE_HUB_ISSUER:-core-hub}
+      CORE_HUB_AUDIENCE: ${CORE_HUB_AUDIENCE:-csmju2030}
+      SUBSYSTEM_ID: ${SUBSYSTEM_ID:-software-project-risk}
+      SUBSYSTEM_NAME: ${SUBSYSTEM_NAME:-Software Project Risk}
+    ports:
+      - '4201:4201'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+volumes:
+  software-project-risk-db-data:

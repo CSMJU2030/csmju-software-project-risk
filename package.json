@@ -1,5 +1,23 @@
 {
-  "name": "csmju-software-project-risk",
+  "name": "software-project-risk",
+  "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@9.15.9"
+  "description": "Software Project Risk Analysis & What-if Simulation System - CSMJU2030 subsystem",
+  "scripts": {
+    "dev": "pnpm --parallel --filter backend --filter frontend start:dev",
+    "build": "pnpm --filter backend build && pnpm --filter frontend build",
+    "start:dev": "pnpm --filter backend start:dev",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm --filter backend test",
+    "prisma:migrate": "pnpm --filter backend prisma:migrate",
+    "prisma:deploy": "pnpm --filter backend prisma:deploy",
+    "prisma:seed": "pnpm --filter backend prisma:seed",
+    "conformance": "node standards/conformance/run.js",
+    "checks": "bash standards/scripts/run-all-checks.sh ."
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@12.3.4"
 }
