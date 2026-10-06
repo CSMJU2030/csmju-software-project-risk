@@ -1,4 +1,4 @@
-﻿import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaPg } from '@prisma/adapter-pg';
 // เนเธเธฅเนเธเธตเนเน€เธเธดเธ”เธเธฒเธ `npm run prisma:generate` (เธ”เธน prisma/schema.prisma)
 import { PrismaClient } from '../generated/prisma/client';
@@ -12,7 +12,10 @@ export class PrismaService
 
   constructor() {
     super({
-      adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+      adapter: new PrismaPg({
+        connectionString: process.env.DATABASE_URL,
+        max: Number(process.env.DATABASE_POOL_MAX) || 5,
+      }),
     });
   }
 
@@ -34,4 +37,3 @@ export class PrismaService
     await this.$disconnect();
   }
 }
-

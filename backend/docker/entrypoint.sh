@@ -2,6 +2,7 @@
 set -e
 
 echo "[entrypoint] applying database migrations ..."
-npx prisma migrate deploy
+./node_modules/.bin/prisma migrate deploy
+
 echo "[entrypoint] starting Software Project Risk"
 exec "$@"
