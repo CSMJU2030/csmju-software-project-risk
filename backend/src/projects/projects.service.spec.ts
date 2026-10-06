@@ -5,7 +5,6 @@ import {
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { PrismaService } from '../prisma/prisma.service';
 import { ProjectsService } from './projects.service';
 
@@ -33,11 +32,11 @@ describe('ProjectsService', () => {
   let service: ProjectsService;
   const prisma = {
     project: {
-      create: jest.fn<(args: unknown) => Promise<unknown>>(),
-      findMany: jest.fn<(args?: unknown) => Promise<unknown>>(),
-      findUnique: jest.fn<(args: unknown) => Promise<unknown>>(),
-      update: jest.fn<(args: unknown) => Promise<unknown>>(),
-      delete: jest.fn<(args: unknown) => Promise<unknown>>(),
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
     },
   };
 
@@ -144,7 +143,7 @@ describe('ProjectsService', () => {
   it('delete project', async () => {
     prisma.project.findUnique.mockResolvedValue(dbProject());
     prisma.project.delete.mockResolvedValue(dbProject());
-    await expect(service.remove(ID)).resolves.toBeUndefined();
+    await expect(service.remove(ID)).resolves.toEqual({ id: ID, deleted: true });
     expect(prisma.project.delete).toHaveBeenCalledWith({ where: { id: ID } });
   });
 

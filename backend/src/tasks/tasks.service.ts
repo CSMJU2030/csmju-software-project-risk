@@ -65,6 +65,7 @@ export class TasksService {
   async remove(id: string) {
     await this.getOrThrow(id);
     await this.run(() => this.prisma.task.delete({ where: { id } }));
+    return { id, deleted: true };
     // เธซเธกเธฒเธขเน€เธซเธ•เธธ: เธฅเธ Task เนเธฅเนเธง TaskDependency เธ—เธตเนเน€เธเธตเนเธขเธงเธเนเธญเธเธ–เธนเธเธฅเธเธ•เธฒเธก (onDelete: Cascade เนเธ schema)
   }
 

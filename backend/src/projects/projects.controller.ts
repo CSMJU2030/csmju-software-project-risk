@@ -50,7 +50,7 @@ export class ProjectsController {
 
   @RequirePermissions(Permission.PROJECT_DELETE_ANY)
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(200)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.projectsService.remove(id);
   }

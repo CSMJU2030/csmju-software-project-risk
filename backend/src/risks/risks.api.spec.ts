@@ -1,7 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
-import { afterAll, beforeAll, describe, expect, it, jest } from '@jest/globals';
 import { setupApp } from '../app.setup';
 import { PrismaService } from '../prisma/prisma.service';
 import { RisksModule } from './risks.module';
@@ -124,7 +123,7 @@ describe('Risks API (HTTP, in-memory fake DB)', () => {
     const spoofed = await send('PATCH', `/risks/${created.id}`, { score: 1 });
     expect(spoofed.status).toBe(400);
 
-    expect((await send('DELETE', `/risks/${created.id}`)).status).toBe(204);
+    expect((await send('DELETE', `/risks/${created.id}`)).status).toBe(200);
     expect((await send('GET', `/risks/${created.id}`)).status).toBe(404);
   });
 

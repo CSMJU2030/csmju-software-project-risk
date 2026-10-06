@@ -87,6 +87,7 @@ export class ProjectsService {
   async remove(id: string) {
     await this.getOrThrow(id);
     await this.run(() => this.prisma.project.delete({ where: { id } }));
+    return { id, deleted: true };
   }
 
   // ---------- helpers ----------

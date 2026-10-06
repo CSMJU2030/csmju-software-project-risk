@@ -58,6 +58,7 @@ export class ScenarioChangesService {
       throw new NotFoundException(`Scenario change with id ${id} not found`);
     }
     await this.run(() => this.prisma.scenarioChange.delete({ where: { id } }));
+    return { id, deleted: true };
   }
 
   // ---------- validation เธ•เธฒเธก factor (PHASE 4 BUSINESS LOGIC FREEZE เธเนเธญ 14) ----------

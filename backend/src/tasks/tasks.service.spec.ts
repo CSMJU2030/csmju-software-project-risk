@@ -72,7 +72,7 @@ describe('TasksService', () => {
   it('delete task: สำเร็จ', async () => {
     prisma.task.findUnique.mockResolvedValue(dbTask());
     prisma.task.delete.mockResolvedValue(dbTask());
-    await expect(service.remove(TASK_ID)).resolves.toBeUndefined();
+    await expect(service.remove(TASK_ID)).resolves.toEqual({ id: TASK_ID, deleted: true });
     expect(prisma.task.delete).toHaveBeenCalledWith({ where: { id: TASK_ID } });
   });
 

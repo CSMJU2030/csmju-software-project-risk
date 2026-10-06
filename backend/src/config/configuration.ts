@@ -1,4 +1,4 @@
-export interface AppConfig {
+﻿export interface AppConfig {
   nodeEnv: string;
   port: number;
   subsystemId: string;
@@ -25,7 +25,7 @@ function num(value: string | undefined, fallback: number): number {
 }
 
 export default (): AppConfig => {
-  const coreHubUrl = process.env.CORE_HUB_URL ?? 'http://localhost:3000';
+  const coreHubUrl = process.env.CORE_HUB_URL ?? 'https://csmju2030.jowave.com';
 
   return {
     nodeEnv: process.env.NODE_ENV ?? 'development',

@@ -1,6 +1,5 @@
 import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { PrismaService } from '../prisma/prisma.service';
 import { ScenariosService } from '../scenarios/scenarios.service';
 import { SimulationsService } from './simulations.service';

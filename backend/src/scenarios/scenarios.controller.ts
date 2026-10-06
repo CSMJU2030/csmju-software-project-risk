@@ -38,7 +38,7 @@ export class ScenariosController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(200)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.scenariosService.remove(id);
   }

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+﻿import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JWK, KeyLike, importJWK } from "jose";
 import { AuthEventsLogger } from "./auth-events.logger";
@@ -10,7 +10,7 @@ interface CachedKey {
 }
 
 /**
- * Core Hub JWKS client (spec §10, §11, §40).
+ * Core Hub JWKS client (spec ยง10, ยง11, ยง40).
  *
  * - Downloads public keys from the Core Hub JWKS endpoint (public material only).
  * - Caches keys with a TTL so the Core Hub is not contacted per request.
@@ -33,7 +33,7 @@ export class JwksService {
   private get jwksUrl(): string {
     return this.config.get<string>(
       "coreHub.jwksUrl",
-      "http://localhost:3000/api/v1/.well-known/jwks.json",
+      "https://csmju2030.jowave.com/api/v1/.well-known/jwks.json",
     );
   }
 

@@ -87,6 +87,7 @@ export class RisksService {
   async remove(id: string) {
     await this.getOrThrow(id);
     await this.run(() => this.prisma.risk.delete({ where: { id } }));
+    return { id, deleted: true };
   }
 
   // ---------- helpers ----------

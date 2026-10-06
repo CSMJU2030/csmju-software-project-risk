@@ -70,7 +70,7 @@ describe('ScenariosService', () => {
   it('remove: สำเร็จ', async () => {
     prisma.scenario.findUnique.mockResolvedValue(dbScenario());
     prisma.scenario.delete.mockResolvedValue(dbScenario());
-    await expect(service.remove(SCENARIO_ID)).resolves.toBeUndefined();
+    await expect(service.remove(SCENARIO_ID)).resolves.toEqual({ id: SCENARIO_ID, deleted: true });
     expect(prisma.scenario.delete).toHaveBeenCalledWith({ where: { id: SCENARIO_ID } });
   });
 

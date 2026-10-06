@@ -24,7 +24,7 @@ export class TaskDependenciesController {
   constructor(private readonly service: TaskDependenciesService) {}
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(200)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.remove(id);
   }

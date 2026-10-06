@@ -1,6 +1,5 @@
 import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { PrismaService } from '../prisma/prisma.service';
 import { TaskDependenciesService } from './task-dependencies.service';
 
@@ -11,12 +10,12 @@ const task = (id: string, projectId = 'p1') => ({ id, projectId });
 describe('TaskDependenciesService', () => {
   let service: TaskDependenciesService;
   const prisma = {
-    task: { findUnique: jest.fn<(...args: any[]) => any>() },
+    task: { findUnique: jest.fn() },
     taskDependency: {
-      findMany: jest.fn<(...args: any[]) => any>(),
-      findUnique: jest.fn<(...args: any[]) => any>(),
-      create: jest.fn<(...args: any[]) => any>(),
-      delete: jest.fn<(...args: any[]) => any>(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      create: jest.fn(),
+      delete: jest.fn(),
     },
   };
 
@@ -117,7 +116,7 @@ describe('TaskDependenciesService', () => {
   it('remove: สำเร็จ', async () => {
     prisma.taskDependency.findUnique.mockResolvedValue({ id: 'd1' });
     prisma.taskDependency.delete.mockResolvedValue({ id: 'd1' });
-    await expect(service.remove('d1')).resolves.toBeUndefined();
+    await expect(service.remove('d1')).resolves.toEqual({ id: 'd1', deleted: true });
   });
 
   it('remove: ไม่พบ → 404', async () => {

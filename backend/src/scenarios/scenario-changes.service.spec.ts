@@ -125,7 +125,7 @@ describe('ScenarioChangesService', () => {
   it('remove: สำเร็จ', async () => {
     prisma.scenarioChange.findUnique.mockResolvedValue({ id: 'c1' });
     prisma.scenarioChange.delete.mockResolvedValue({ id: 'c1' });
-    await expect(service.remove('c1')).resolves.toBeUndefined();
+    await expect(service.remove('c1')).resolves.toEqual({ id: 'c1', deleted: true });
   });
 
   it('remove: ไม่พบ → 404', async () => {

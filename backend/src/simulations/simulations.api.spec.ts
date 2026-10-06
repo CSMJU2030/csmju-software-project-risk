@@ -1,7 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
-import { afterAll, beforeAll, describe, expect, it, jest } from '@jest/globals';
 import { setupApp } from '../app.setup';
 import { PrismaService } from '../prisma/prisma.service';
 import { ScenarioChangesController, ScenarioChangesNestedController } from '../scenarios/scenario-changes.controller';
@@ -218,7 +217,7 @@ describe('Scenario + Simulation API (HTTP, in-memory fake DB, reproduces Spec se
     const scenario = await (
       await send('POST', `/projects/${PROJECT_ID}/scenarios`, { name: 'To Delete' })
     ).json();
-    expect((await send('DELETE', `/scenarios/${scenario.id}`)).status).toBe(204);
+    expect((await send('DELETE', `/scenarios/${scenario.id}`)).status).toBe(200);
     expect((await send('GET', `/scenarios/${scenario.id}`)).status).toBe(404);
   });
 });

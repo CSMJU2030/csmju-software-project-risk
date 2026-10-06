@@ -79,6 +79,7 @@ export class TaskDependenciesService {
       throw new NotFoundException(`Task dependency with id ${id} not found`);
     }
     await this.run(() => this.prisma.taskDependency.delete({ where: { id } }));
+    return { id, deleted: true };
   }
 
   // ---------- helpers ----------

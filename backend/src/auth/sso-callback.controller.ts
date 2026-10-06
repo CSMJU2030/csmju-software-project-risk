@@ -1,4 +1,4 @@
-import { randomBytes } from 'node:crypto';
+import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { Controller, Get, Headers, Post, Query, Res } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { Response } from 'express';
@@ -41,7 +41,11 @@ export class SsoCallbackController {
     response.setHeader('Cache-Control', 'no-store');
     response.setHeader('Referrer-Policy', 'no-referrer');
     response.setHeader('Set-Cookie', buildStateCookie(state, next, secure));
-    response.redirect(302, `${coreHubWebUrl}/api/sso/${encodeURIComponent(this.config.get<string>("subsystemId")!)}`);
+    const subsystemId = this.config.get<string>('subsystemId')!;
+    const authorizeUrl = new URL(`${coreHubWebUrl}/sso/authorize`);
+    authorizeUrl.searchParams.set('subsystem', subsystemId);
+    authorizeUrl.searchParams.set('state', state);
+    response.redirect(302, authorizeUrl.toString());
   }
 
   @Public()
@@ -64,7 +68,7 @@ export class SsoCallbackController {
 
     response.append('Set-Cookie', clearCookie(SSO_STATE_COOKIE_NAME, secure));
     const state = parseStateCookie(stateCookie);
-    if (!state || state.state !== query.state) {
+    if (!state || !this.safeStateEquals(state.state, query.state)) {
       if (accept?.includes('text/html')) {
         response.status(401).send('<!doctype html><title>SSO Login Required</title><p>เซสชันเข้าสู่ระบบหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง</p><a href="/auth/login">เข้าสู่ระบบอีกครั้ง</a>');
         return;
@@ -89,10 +93,11 @@ export class SsoCallbackController {
       throw AppException.forbidden('Your Core Hub role has no access to this subsystem');
     }
 
+    const safeNext = this.safeNext(state.next);
     const expiresInSec = this.remainingLifetimeSec(payload.exp);
     response.append('Set-Cookie', buildSsoCookie(query.access_token, expiresInSec, secure));
     this.authEvents.jwtVerified({ sub: payload.sub, coreRole: payload.role, subsystemRole });
-    response.redirect(302, state.next);
+    response.redirect(302, safeNext);
   }
 
   @Public()
@@ -116,7 +121,7 @@ export class SsoCallbackController {
     if (next === '/auth' || next.startsWith('/auth/')) return '/';
 
     try {
-      const origin = this.config.get<string>('coreHub.webUrl') ?? 'http://localhost:3000';
+      const origin = this.config.get<string>('coreHub.webUrl') ?? 'https://csmju2030.jowave.com';
       const url = new URL(next, origin);
       if (url.origin !== origin.replace(/\/+$/, '')) return '/';
     } catch {
@@ -124,6 +129,12 @@ export class SsoCallbackController {
     }
 
     return next;
+  }
+
+  private safeStateEquals(expected: string, actual: string): boolean {
+    const expectedBuffer = Buffer.from(expected, 'utf8');
+    const actualBuffer = Buffer.from(actual, 'utf8');
+    return expectedBuffer.length === actualBuffer.length && timingSafeEqual(expectedBuffer, actualBuffer);
   }
 
   private remainingLifetimeSec(exp: number | undefined): number {

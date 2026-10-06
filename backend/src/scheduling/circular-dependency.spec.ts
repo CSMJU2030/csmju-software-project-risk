@@ -1,4 +1,3 @@
-import { describe, expect, it } from '@jest/globals';
 import { findCycle, hasCircularDependency, wouldCreateCycle } from './circular-dependency';
 
 describe('findCycle / hasCircularDependency', () => {

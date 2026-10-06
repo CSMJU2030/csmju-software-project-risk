@@ -20,7 +20,7 @@ probes:
   create:
     path: /api/v1/projects
     allowed_role: staff
-    denied_role: student
+    denied_role: alumni
     invalid_body:
       name: ""
     valid_body:
@@ -33,5 +33,5 @@ probes:
       status: PLANNING
 
 display_name: "Software Project Risk"
-repo: github.com/supawadeeboonsa/SoftwareProjectRisk
+repo: github.com/CSMJU2030/csmju-software-project-risk
 status: proposed

@@ -1,4 +1,3 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { PrismaService } from '../prisma/prisma.service';
@@ -145,7 +144,7 @@ describe('RisksService', () => {
   it('delete risk: สำเร็จ', async () => {
     prisma.risk.findUnique.mockResolvedValue(dbRisk());
     prisma.risk.delete.mockResolvedValue(dbRisk());
-    await expect(service.remove(RISK_ID)).resolves.toBeUndefined();
+    await expect(service.remove(RISK_ID)).resolves.toEqual({ id: RISK_ID, deleted: true });
     expect(prisma.risk.delete).toHaveBeenCalledWith({ where: { id: RISK_ID } });
   });
 

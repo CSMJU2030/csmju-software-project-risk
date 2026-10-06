@@ -101,7 +101,7 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 const get = <T>(p: string) => request<T>('GET', p);
 const post = <T>(p: string, b?: unknown) => request<T>('POST', p, b ?? {});
 const patch = <T>(p: string, b: unknown) => request<T>('PATCH', p, b);
-const del = (p: string) => request<void>('DELETE', p);
+const del = (p: string) => request<{ id: string; deleted: boolean }>('DELETE', p);
 
 export const api = {
   projects: {

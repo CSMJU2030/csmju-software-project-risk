@@ -1,6 +1,5 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { afterAll, beforeAll, describe, expect, it, jest } from '@jest/globals';
 import { randomUUID } from 'crypto';
 import { setupApp } from '../app.setup';
 import { PrismaService } from '../prisma/prisma.service';
@@ -120,7 +119,7 @@ describe('Projects API (HTTP, in-memory fake DB)', () => {
     const bad = await send('PATCH', `/projects/${created.id}`, { endDate: '2025-01-01' });
     expect(bad.status).toBe(400);
 
-    expect((await send('DELETE', `/projects/${created.id}`)).status).toBe(204);
+    expect((await send('DELETE', `/projects/${created.id}`)).status).toBe(200);
     expect((await send('GET', `/projects/${created.id}`)).status).toBe(404);
   });
 

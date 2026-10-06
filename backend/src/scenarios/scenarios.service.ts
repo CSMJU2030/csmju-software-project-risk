@@ -54,6 +54,7 @@ export class ScenariosService {
     }
     // Cascade เธฅเธ ScenarioChange เนเธฅเธฐ Simulation เธ—เธตเนเน€เธเธตเนเธขเธงเธเนเธญเธเธ•เธฒเธก schema
     await this.run(() => this.prisma.scenario.delete({ where: { id } }));
+    return { id, deleted: true };
   }
 
   // ---------- helpers (เนเธเนเธฃเนเธงเธกเธเธฑเธ ScenarioChangesService/SimulationsService เธเนเธฒเธ export) ----------
