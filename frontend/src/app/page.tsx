@@ -32,7 +32,7 @@ async function loadDashboard(): Promise<DashboardData> {
 }
 
 const LEVELS: RiskLevel[] = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
-const BAR: Record<RiskLevel, string> = { LOW: 'bg-emerald-500', MEDIUM: 'bg-amber-500', HIGH: 'bg-orange-500', CRITICAL: 'bg-error' };
+const BAR: Record<RiskLevel, string> = { LOW: 'bg-success', MEDIUM: 'bg-warning', HIGH: 'bg-warning', CRITICAL: 'bg-error' };
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (

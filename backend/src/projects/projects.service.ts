@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   HttpException,
   Injectable,
   InternalServerErrorException,
@@ -10,6 +11,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { CoreHubIdentity, SubsystemRole } from '../auth/core-hub-identity';
 
 // เธฃเธซเธฑเธช error เธเธญเธ Prisma เธ—เธตเนเนเธเธฅเธงเนเธฒ "เธ•เนเธญเธเธฒเธเธเนเธญเธกเธนเธฅเนเธกเนเนเธ”เน"
 const DB_UNREACHABLE_CODES = ['P1000', 'P1001', 'P1002', 'P1008', 'P1017'];
@@ -20,7 +22,7 @@ export class ProjectsService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: CreateProjectDto) {
+  async create(dto: CreateProjectDto, user?: CoreHubIdentity) {
     const startDate = new Date(dto.startDate);
     const endDate = new Date(dto.endDate);
     this.assertDateRange(startDate, endDate);
@@ -29,6 +31,7 @@ export class ProjectsService {
       this.prisma.project.create({
         data: {
           name: dto.name,
+          createdBy: user?.id,
           description: dto.description,
           startDate,
           endDate,
@@ -41,14 +44,19 @@ export class ProjectsService {
     return this.toResponse(project);
   }
 
-  async findAll(page = 1, limit = 20) {
+  async findAll(page = 1, limit = 20, user?: CoreHubIdentity) {
+    const canSeeAll =
+      user?.subsystemRole === SubsystemRole.STAFF ||
+      user?.subsystemRole === SubsystemRole.ADMIN;
+    const where = !canSeeAll && user ? { createdBy: user.id } : undefined;
+
     const projects = await this.run(() => this.prisma.project.findMany({
+      where,
       orderBy: { createdAt: 'desc' },
       skip: (page - 1) * limit,
       take: limit,
     }));
-    const countFn = (this.prisma.project as unknown as { count?: () => Promise<number> }).count;
-    const total = countFn ? await this.run(() => countFn.call(this.prisma.project)) : projects.length;
+    const total = await this.run(() => this.prisma.project.count({ where }));
     return {
       data: projects.map((p) => this.toResponse(p)),
       meta: { total, page, limit, totalPages: total === 0 ? 0 : Math.ceil(total / limit) },
@@ -59,8 +67,22 @@ export class ProjectsService {
     return this.toResponse(await this.getOrThrow(id));
   }
 
-  async update(id: string, dto: UpdateProjectDto) {
+  async update(id: string, dto: UpdateProjectDto, user?: CoreHubIdentity) {
     const existing = await this.getOrThrow(id);
+
+    // Legacy projects created before owner tracking are claimed by the first
+    // authenticated editor, so existing demo data is not lost.
+    if (user && !existing.createdBy && user.subsystemRole !== SubsystemRole.STAFF && user.subsystemRole !== SubsystemRole.ADMIN) {
+      await this.run(() =>
+        this.prisma.project.update({
+          where: { id },
+          data: { createdBy: user.id },
+        }),
+      );
+      existing.createdBy = user.id;
+    }
+
+    this.assertProjectAccess(existing.createdBy, user);
 
     // เธ•เธฃเธงเธเธเนเธงเธเธงเธฑเธเธ—เธตเนเธเธฒเธเธเนเธฒเธ—เธตเนเธเธฐเน€เธเนเธเธซเธฅเธฑเธเนเธเน (เธเนเธฒเนเธซเธกเน เธ–เนเธฒเนเธกเนเธชเนเธเนเธเนเธเนเธฒเน€เธ”เธดเธก)
     const startDate = dto.startDate ? new Date(dto.startDate) : existing.startDate;
@@ -84,8 +106,9 @@ export class ProjectsService {
     return this.toResponse(project);
   }
 
-  async remove(id: string) {
-    await this.getOrThrow(id);
+  async remove(id: string, user?: CoreHubIdentity) {
+    const existing = await this.getOrThrow(id);
+    this.assertProjectAccess(existing.createdBy, user);
     await this.run(() => this.prisma.project.delete({ where: { id } }));
     return { id, deleted: true };
   }
@@ -100,6 +123,19 @@ export class ProjectsService {
       throw new NotFoundException(`Project with id ${id} not found`);
     }
     return project;
+  }
+
+  private assertProjectAccess(createdBy: string | null | undefined, user?: CoreHubIdentity) {
+    if (!user) {
+      return;
+    }
+    const canManageAll =
+      user.subsystemRole === SubsystemRole.STAFF ||
+      user.subsystemRole === SubsystemRole.ADMIN;
+
+    if (!canManageAll && createdBy !== user.id) {
+      throw new ForbiddenException('You do not have permission to perform this action');
+    }
   }
 
   private assertDateRange(startDate: Date, endDate: Date) {

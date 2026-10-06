@@ -1,10 +1,10 @@
-name: software-project-risk
+name: csmju-software-project-risk
 conformance_level: L3
 
 # Frontend is the subsystem gateway. Auth/API traffic is proxied to backend.
-base_url: http://localhost:3201
-core_hub_url: http://localhost:3000
-core_hub_web_url: http://localhost:3100
+base_url: http://localhost:3232
+core_hub_url: https://csmju2030.jowave.com
+core_hub_web_url: https://csmju2030.jowave.com
 callback_path: /auth/callback
 
 public_endpoints:

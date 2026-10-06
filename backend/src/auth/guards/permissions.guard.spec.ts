@@ -42,11 +42,9 @@ describe('PermissionsGuard - authorization tests (spec §15, §36)', () => {
     expect(guard.canActivate(contextFor(identity(SubsystemRole.STAFF)))).toBe(true);
   });
 
-  it('denies STUDENT from creating projects with 403', () => {
+  it('allows STUDENT to create projects', () => {
     requirePermissions(Permission.PROJECT_CREATE);
-    expect(() => guard.canActivate(contextFor(identity(SubsystemRole.STUDENT)))).toThrow(
-      expect.objectContaining({ status: 403 }),
-    );
+    expect(guard.canActivate(contextFor(identity(SubsystemRole.STUDENT)))).toBe(true);
   });
 
   it('denies ALUMNI from deleting projects with 403', () => {

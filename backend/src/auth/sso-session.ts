@@ -1,5 +1,5 @@
-export const SSO_COOKIE_NAME = 'software_project_risk_access_token';
-export const SSO_STATE_COOKIE_NAME = 'software_project_risk_sso_state';
+export const SSO_COOKIE_NAME = 'csmju_software_project_risk_access_token';
+export const SSO_STATE_COOKIE_NAME = 'csmju_software_project_risk_sso_state';
 export const SSO_STATE_MAX_AGE_SEC = 600;
 
 export function readCookie(header: string | undefined, name: string): string | null {

@@ -28,16 +28,17 @@ services:
         condition: service_healthy
     environment:
       NODE_ENV: ${NODE_ENV:-development}
-      PORT: 4201
+      PORT: 4232
       DATABASE_URL: postgresql://postgres:postgres@software-project-risk-db:5432/software_project_risk
-      CORE_HUB_URL: ${CORE_HUB_URL:-http://host.docker.internal:3000}
-      CORE_HUB_JWKS_URL: ${CORE_HUB_JWKS_URL:-http://host.docker.internal:3000/api/v1/.well-known/jwks.json}
+      CORE_HUB_URL: ${CORE_HUB_URL:-https://csmju2030.jowave.com}
+      CORE_HUB_WEB_URL: ${CORE_HUB_WEB_URL:-https://csmju2030.jowave.com}
+      CORE_HUB_JWKS_URL: ${CORE_HUB_JWKS_URL:-https://csmju2030.jowave.com/api/v1/.well-known/jwks.json}
       CORE_HUB_ISSUER: ${CORE_HUB_ISSUER:-core-hub}
       CORE_HUB_AUDIENCE: ${CORE_HUB_AUDIENCE:-csmju2030}
-      SUBSYSTEM_ID: ${SUBSYSTEM_ID:-software-project-risk}
+      SUBSYSTEM_ID: ${SUBSYSTEM_ID:-csmju-software-project-risk}
       SUBSYSTEM_NAME: ${SUBSYSTEM_NAME:-Software Project Risk}
     ports:
-      - '4201:4201'
+      - '4232:4232'
     extra_hosts:
       - 'host.docker.internal:host-gateway'
 

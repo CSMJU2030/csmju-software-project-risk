@@ -35,7 +35,7 @@ export default function SimulationPage() {
       <Card className="mb-6">
         <h2 className="mb-3 font-display text-headline-md">ก่อน / หลัง / การเปลี่ยนแปลง</h2>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[32rem] text-left text-body-md">
+          <table className="w-full min-w-0 text-left text-body-md">
             <thead>
               <tr className="border-b border-outline-variant text-label-md text-on-surface-variant">
                 <th scope="col" className="py-2 pr-4">ตัวชี้วัด</th><th scope="col" className="py-2 pr-4">ก่อน</th>
@@ -45,7 +45,7 @@ export default function SimulationPage() {
             <tbody>
               {rows.map((r) => (
                 <tr key={r.label} className="border-b border-outline-variant last:border-0">
-                  <th scope="row" className="py-3 pr-4 font-semibold">{r.label}</th>
+                  <th scope="row" className="max-w-[14rem] whitespace-normal break-words py-3 pr-4 font-semibold">{r.label}</th>
                   <td className="py-3 pr-4">{r.before}</td><td className="py-3 pr-4">{r.after}</td>
                   <td className={`py-3 font-semibold ${r.bad ? 'text-error' : ''}`}>{r.change}</td>
                 </tr>
@@ -61,7 +61,7 @@ export default function SimulationPage() {
           <p className="text-body-md text-on-surface-variant">สถานการณ์นี้ไม่ได้เปลี่ยนความเสี่ยงใดๆ</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[40rem] text-left text-body-md">
+            <table className="w-full min-w-0 text-left text-body-md">
               <thead>
                 <tr className="border-b border-outline-variant text-label-md text-on-surface-variant">
                   <th scope="col" className="py-2 pr-4">ความเสี่ยง</th><th scope="col" className="py-2 pr-4">ก่อน (โอกาส × ผลกระทบ)</th>
@@ -71,7 +71,7 @@ export default function SimulationPage() {
               <tbody>
                 {sim.riskChanges.map((r) => (
                   <tr key={r.riskId} className="border-b border-outline-variant last:border-0">
-                    <th scope="row" className="py-3 pr-4 font-semibold">{r.name}</th>
+                    <th scope="row" className="max-w-[14rem] whitespace-normal break-words py-3 pr-4 font-semibold">{r.name}</th>
                     <td className="py-3 pr-4"><div>{r.beforeProbability} × {r.beforeImpact} = {r.beforeScore}</div><RiskLevelBadge level={r.beforeLevel} /></td>
                     <td className="py-3 pr-4"><div>{r.afterProbability} × {r.afterImpact} = {r.afterScore}</div><RiskLevelBadge level={r.afterLevel} /></td>
                     <td className={`py-3 font-semibold ${r.afterScore > r.beforeScore ? 'text-error' : ''}`}>{formatSigned(r.afterScore - r.beforeScore, 'คะแนน')}</td>

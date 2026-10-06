@@ -23,6 +23,7 @@ function createFakePrisma() {
         return row;
       },
       findMany: async () => [...rows.values()],
+      count: async () => rows.size,
       findUnique: async ({ where }: any) => rows.get(where.id) ?? null,
       update: async ({ where, data }: any) => {
         const row = { ...rows.get(where.id), ...clean(data), updatedAt: new Date() };

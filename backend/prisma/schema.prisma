@@ -9,6 +9,7 @@ datasource db {
 
 model Project {
   id          String        @id @default(uuid())
+  createdBy   String?       @map("created_by")
   name        String
   description String?
   budget      Decimal       @db.Decimal(14, 2)

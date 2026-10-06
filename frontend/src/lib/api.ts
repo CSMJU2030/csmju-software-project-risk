@@ -85,6 +85,14 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
     data = undefined;
   }
 
+  // หากยังไม่มี SSO session ให้เข้าสู่ระบบผ่าน Core Hub
+  // ใช้เฉพาะ API ที่ต้องยืนยันตัวตน ไม่ redirect ซ้ำบนหน้า auth เอง
+  if (res.status === 401 && typeof window !== 'undefined' && !window.location.pathname.startsWith('/auth/')) {
+    const next = `${window.location.pathname}${window.location.search}`;
+    window.location.assign(`/auth/login?next=${encodeURIComponent(next)}`);
+    throw new ApiError(401, 'กำลังนำไปยังระบบกลางเพื่อเข้าสู่ระบบ');
+  }
+
   if (!res.ok) {
     if (data === undefined && res.status >= 500) {
       throw new ApiError(res.status, 'เชื่อมต่อ Backend ไม่ได้ กรุณาตรวจสอบว่า Backend ทำงานอยู่ที่พอร์ตใน API_URL');

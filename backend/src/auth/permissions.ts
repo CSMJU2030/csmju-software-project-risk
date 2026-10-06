@@ -14,13 +14,20 @@ export enum Permission {
   PROJECT_CREATE = 'project:create',
   PROJECT_UPDATE_ANY = 'project:update:any',
   PROJECT_DELETE_ANY = 'project:delete:any',
+  PROJECT_UPDATE_OWN = 'project:update:own',
+  PROJECT_DELETE_OWN = 'project:delete:own',
 }
 
-/** Students do not manage project risk records in this subsystem. */
-const STUDENT_PERMISSIONS: Permission[] = [];
+/** Students can create and manage their own projects. */
+const STUDENT_PERMISSIONS: Permission[] = [
+  Permission.PROJECT_READ_ANY,
+  Permission.PROJECT_CREATE,
+  Permission.PROJECT_UPDATE_OWN,
+  Permission.PROJECT_DELETE_OWN,
+];
 
-/** Alumni do not manage project risk records in this subsystem. */
-const ALUMNI_PERMISSIONS: Permission[] = [];
+/** Alumni may view project risk records but do not manage them. */
+const ALUMNI_PERMISSIONS: Permission[] = [Permission.PROJECT_READ_ANY];
 
 /** Staff manage project risk records. */
 const STAFF_PERMISSIONS: Permission[] = Object.values(Permission);
