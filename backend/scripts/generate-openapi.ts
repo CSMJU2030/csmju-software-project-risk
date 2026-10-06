@@ -1,4 +1,7 @@
 import 'dotenv/config';
+
+// OpenAPI generation does not need a live database, but Nest validation requires DATABASE_URL.
+process.env.DATABASE_URL ??= 'postgresql://localhost:5432/openapi';
 import { execSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
