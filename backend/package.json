@@ -5,7 +5,7 @@
     "description": "SoftwareProjectRisk backend - CSMJU2030 subsystem",
     "scripts": {
         "build": "nest build",
-        "typecheck": "tsc --noEmit -p tsconfig.json",
+        "typecheck": "prisma generate && tsc --noEmit -p tsconfig.json",
         "lint": "eslint \"{src,test}/**/*.ts\"",
         "start": "nest start",
         "start:dev": "nest start --watch",
@@ -15,7 +15,7 @@
         "prisma:deploy": "prisma migrate deploy",
         "prisma:seed": "ts-node prisma/seed.ts",
         "test": "jest --config jest.config.js",
-        "generate:openapi": "ts-node scripts/generate-openapi.ts"
+        "generate:openapi": "prisma generate && ts-node --transpile-only scripts/generate-openapi.ts"
     },
     "dependencies": {
         "@nestjs/common": "^11.0.1",
