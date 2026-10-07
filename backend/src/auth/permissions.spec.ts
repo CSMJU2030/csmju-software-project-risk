@@ -2,14 +2,14 @@ import { SubsystemRole } from './core-hub-identity';
 import { Permission, ROLE_PERMISSIONS, can, canAny } from './permissions';
 
 describe('SoftwareProjectRisk permission model', () => {
-  it('student can manage own projects while alumni can only read', () => {
+  it('student and alumni can manage their own projects', () => {
     expect(can(SubsystemRole.STUDENT, Permission.PROJECT_CREATE)).toBe(true);
     expect(can(SubsystemRole.STUDENT, Permission.PROJECT_UPDATE_OWN)).toBe(true);
     expect(can(SubsystemRole.STUDENT, Permission.PROJECT_DELETE_OWN)).toBe(true);
     expect(can(SubsystemRole.ALUMNI, Permission.PROJECT_READ_ANY)).toBe(true);
-    expect(can(SubsystemRole.ALUMNI, Permission.PROJECT_CREATE)).toBe(false);
-    expect(can(SubsystemRole.ALUMNI, Permission.PROJECT_UPDATE_OWN)).toBe(false);
-    expect(can(SubsystemRole.ALUMNI, Permission.PROJECT_DELETE_OWN)).toBe(false);
+    expect(can(SubsystemRole.ALUMNI, Permission.PROJECT_CREATE)).toBe(true);
+    expect(can(SubsystemRole.ALUMNI, Permission.PROJECT_UPDATE_OWN)).toBe(true);
+    expect(can(SubsystemRole.ALUMNI, Permission.PROJECT_DELETE_OWN)).toBe(true);
   });
 
   it('staff can manage projects', () => {
