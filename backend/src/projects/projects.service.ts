@@ -63,25 +63,14 @@ export class ProjectsService {
     };
   }
 
-  async findOne(id: string) {
-    return this.toResponse(await this.getOrThrow(id));
+  async findOne(id: string, user?: CoreHubIdentity) {
+    const project = await this.getOrThrow(id);
+    this.assertProjectAccess(project.createdBy, user);
+    return this.toResponse(project);
   }
 
   async update(id: string, dto: UpdateProjectDto, user?: CoreHubIdentity) {
     const existing = await this.getOrThrow(id);
-
-    // Legacy projects created before owner tracking are claimed by the first
-    // authenticated editor, so existing demo data is not lost.
-    if (user && !existing.createdBy && user.subsystemRole !== SubsystemRole.STAFF && user.subsystemRole !== SubsystemRole.ADMIN) {
-      await this.run(() =>
-        this.prisma.project.update({
-          where: { id },
-          data: { createdBy: user.id },
-        }),
-      );
-      existing.createdBy = user.id;
-    }
-
     this.assertProjectAccess(existing.createdBy, user);
 
     // เธ•เธฃเธงเธเธเนเธงเธเธงเธฑเธเธ—เธตเนเธเธฒเธเธเนเธฒเธ—เธตเนเธเธฐเน€เธเนเธเธซเธฅเธฑเธเนเธเน (เธเนเธฒเนเธซเธกเน เธ–เนเธฒเนเธกเนเธชเนเธเนเธเนเธเนเธฒเน€เธ”เธดเธก)

@@ -40,8 +40,8 @@ export class ProjectsController {
 
   @RequirePermissions(Permission.PROJECT_READ_ANY)
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.projectsService.findOne(id);
+  findOne(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() user: CoreHubIdentity) {
+    return this.projectsService.findOne(id, user);
   }
 
   @RequirePermissions(Permission.PROJECT_UPDATE_OWN)

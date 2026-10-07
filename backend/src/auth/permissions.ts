@@ -26,8 +26,13 @@ const STUDENT_PERMISSIONS: Permission[] = [
   Permission.PROJECT_DELETE_OWN,
 ];
 
-/** Alumni may view project risk records but do not manage them. */
-const ALUMNI_PERMISSIONS: Permission[] = [Permission.PROJECT_READ_ANY];
+/** Alumni can create and manage their own projects. */
+const ALUMNI_PERMISSIONS: Permission[] = [
+  Permission.PROJECT_READ_ANY,
+  Permission.PROJECT_CREATE,
+  Permission.PROJECT_UPDATE_OWN,
+  Permission.PROJECT_DELETE_OWN,
+];
 
 /** Staff manage project risk records. */
 const STAFF_PERMISSIONS: Permission[] = Object.values(Permission);
